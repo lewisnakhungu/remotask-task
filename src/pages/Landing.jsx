@@ -73,7 +73,7 @@ export default function Landing() {
 
         <label className="terms-check">
           <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} id="terms-checkbox" />
-          <span>I agree to the <a href="#" style={{ color: 'var(--primary)' }}>Terms of Service</a> and <a href="#" style={{ color: 'var(--primary)' }}>Privacy Policy</a>. I understand this is a real earning platform.</span>
+          <span>I agree to the <Link to="/terms" style={{ color: 'var(--primary)' }}>Terms of Service</Link> and <Link to="/privacy" style={{ color: 'var(--primary)' }}>Privacy Policy</Link>. I understand this is a real earning platform.</span>
         </label>
 
         <div className="hero-actions" style={{ marginTop: '1.5rem' }}>
@@ -144,7 +144,12 @@ export default function Landing() {
 
       {/* Footer */}
       <footer style={{ borderTop: '1px solid var(--border)', padding: '2rem 1.5rem', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.8rem' }}>
-        <p>© 2026 REMOTASK. All rights reserved. | Nairobi, Kenya</p>
+        <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', margin: '0 auto 1rem' }}>
+            <Link to="/privacy" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Privacy</Link>
+            <Link to="/terms" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms</Link>
+            <span style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>compliance@remotask-portal.com</span>
+        </div>
+        <p>© 2026 REMOTASK. All rights reserved. | Nairobi, Kenya | PVT-RTX2026</p>
       </footer>
     </div>
   );

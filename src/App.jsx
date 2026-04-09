@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import useStore from './store/useStore';
 import Landing from './pages/Landing';
+import Gateway from './pages/Gateway';
+import Legal from './pages/Legal';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Assessment from './pages/Assessment';
@@ -37,6 +39,9 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<GuestRoute><Landing /></GuestRoute>} />
+        <Route path="/welcome" element={<Gateway />} />
+        <Route path="/terms" element={<Legal />} />
+        <Route path="/privacy" element={<Legal />} />
         <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
         <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />
         <Route path="/assessment" element={<AssessmentRoute><Assessment /></AssessmentRoute>} />
