@@ -45,7 +45,7 @@ export default function Legal() {
           <ul style={{ paddingLeft: '1.5rem' }}>
             <li>Email: compliance@aipesa.co.ke</li>
             <li>Address: Victoria Towers, Upper Hill, Nairobi, Kenya</li>
-            <li>Registration: PVT-RTX2026</li>
+            <li>Registration: PVT-AI2026</li>
           </ul>
         </div>
       </div>

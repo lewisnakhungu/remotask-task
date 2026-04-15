@@ -149,7 +149,7 @@ export default function Landing() {
             <Link to="/terms" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms</Link>
             <span style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>compliance@aipesa.co.ke</span>
         </div>
-        <p>© 2026 AIPESA. All rights reserved. | Nairobi, Kenya | PVT-RTX2026</p>
+        <p>© 2026 AIPESA. All rights reserved. | Nairobi, Kenya | PVT-AI2026</p>
       </footer>
     </div>
   );
