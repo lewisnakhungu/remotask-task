@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         phone_number: cleanPhone,
         channel_id: parseInt(channelId),
         provider: "m-pesa",
-        external_reference: external_reference || `INV-${Date.now()}`,
+        external_reference: external_reference || `lewi-${Date.now()}`,
         customer_name: customer_name || "Customer",
         callback_url: `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL || 'your-fallback.vercel.app'}/api/callback`
       })
