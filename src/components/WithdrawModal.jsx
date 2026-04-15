@@ -12,7 +12,7 @@ export default function WithdrawModal({ onClose, onNeedUpgrade }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const minWithdraw = 500;
+  const minWithdraw = 15000;
 
   const handleMethodSelect = (m) => {
     if (m !== 'mpesa') return;
@@ -25,6 +25,25 @@ export default function WithdrawModal({ onClose, onNeedUpgrade }) {
       onNeedUpgrade();
       return;
     }
+
+    // Sequential Constraints
+    if (balance < 15000) {
+      setError('Withdrawal limit not reached. Minimum required: KES 15,000.');
+      return;
+    }
+
+    const regDate = user?.registrationDate || Date.now();
+    const daysActive = (Date.now() - regDate) / (1000 * 3600 * 24);
+    if (daysActive < 21) {
+      setError(`Withdrawal locked for new accounts. Please wait ${Math.ceil(21 - daysActive)} more days.`);
+      return;
+    }
+
+    if ((user?.referralCount || 0) < 2) {
+      setError('Minimum referrals not met. 2 active referrals required for withdrawal.');
+      return;
+    }
+
     setStep('form');
   };
 
@@ -84,6 +103,11 @@ export default function WithdrawModal({ onClose, onNeedUpgrade }) {
             {!plan && (
               <div style={{ background: 'rgba(147,51,234,0.1)', border: '1px solid rgba(147,51,234,0.2)', borderRadius: '0.75rem', padding: '0.85rem 1rem', marginBottom: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                 ⚠️ You need an active plan to withdraw. Upgrade your account to continue.
+              </div>
+            )}
+            {error && (
+              <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '0.75rem', padding: '0.85rem 1rem', marginBottom: '1rem', fontSize: '0.8rem', color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontSize: '1.2rem' }}>🚫</span> {error}
               </div>
             )}
             <button className="btn btn-primary btn-full btn-lg" style={{ marginTop: '0.5rem' }} onClick={handleContinue}>

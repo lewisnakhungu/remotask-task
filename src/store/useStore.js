@@ -512,6 +512,15 @@ const TASKS_DATA = [
   },
 ];
 
+// Dynamically and deterministically lock tasks and assign rewards so they don't change on refresh
+TASKS_DATA.forEach(task => {
+  const seed1 = Math.abs(Math.sin(task.id * 100));
+  const seed2 = Math.abs(Math.cos(task.id * 100));
+  task.reward = Math.floor(seed1 * (600 - 500 + 1)) + 500;
+  task.unlockFee = Math.floor(seed2 * (150 - 100 + 1)) + 100;
+  task.isPremium = seed1 > 0.3; // Approx 70% locked
+});
+
 const WITHDRAWAL_DATA = [
   { phone: '+254 7** *** 234', amount: 'KES 2,450', time: '2 min ago' },
   { phone: '+254 7** *** 891', amount: 'KES 800', time: '5 min ago' },
@@ -546,6 +555,7 @@ const useStore = create(
       // Tasks
       tasks: TASKS_DATA,
       completedTaskIds: [],
+      unlockedTaskIds: [],
       tasksCompletedToday: 0,
       accuracyRate: 0,
 
@@ -555,13 +565,14 @@ const useStore = create(
 
       // Actions
       register: (userData) => set({
-        user: userData,
+        user: { ...userData, referralCount: 0, registrationDate: Date.now() },
         isAuthenticated: true,
         assessmentDone: false,
         balance: 0,
         plan: null,
         earnings: [],
         completedTaskIds: [],
+        unlockedTaskIds: [],
         tasksCompletedToday: 0,
         accuracyRate: 0,
       }),
@@ -590,16 +601,22 @@ const useStore = create(
       completeTask: (taskId) => {
         const task = get().tasks.find(t => t.id === taskId);
         if (!task) return;
-        const rewardKES = Math.round(task.reward * 130); // Convert USD to KES approx
+        
         set((state) => ({
           completedTaskIds: [...state.completedTaskIds, taskId],
           tasksCompletedToday: state.tasksCompletedToday + 1,
-          balance: state.balance + rewardKES,
+          balance: state.balance + task.reward,
           accuracyRate: Math.min(99, state.accuracyRate + 0.5),
           earnings: [
-            { id: Date.now(), type: 'task', description: task.title, amount: rewardKES, date: new Date().toISOString() },
+            { id: Date.now(), type: 'task', description: task.title, amount: task.reward, date: new Date().toISOString() },
             ...state.earnings,
           ],
+        }));
+      },
+
+      unlockTask: (taskId) => {
+        set((state) => ({
+          unlockedTaskIds: [...(state.unlockedTaskIds || []), taskId]
         }));
       },
 
