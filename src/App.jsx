@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import useStore from './store/useStore';
 import Landing from './pages/Landing';
 import Gateway from './pages/Gateway';
@@ -12,6 +13,35 @@ import TaskDetail from './pages/TaskDetail';
 import Earnings from './pages/Earnings';
 import Plans from './pages/Plans';
 import './index.css';
+
+function TitleUpdater() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const titles = {
+      '/': 'AIPesa - Online AI Task Platform',
+      '/welcome': 'Welcome to AIPesa',
+      '/terms': 'Terms of Service | AIPesa',
+      '/privacy': 'Privacy Policy | AIPesa',
+      '/login': 'Sign In | AIPesa',
+      '/signup': 'Create Account | AIPesa',
+      '/assessment': 'Skill Assessment | AIPesa',
+      '/dashboard': 'Dashboard | AIPesa',
+      '/tasks': 'Available Tasks | AIPesa',
+      '/earnings': 'My Earnings | AIPesa',
+      '/plans': 'Upgrade Plans | AIPesa',
+    };
+    
+    if (location.pathname.startsWith('/tasks/')) {
+      document.title = 'Task Details | AIPesa';
+      return;
+    }
+
+    document.title = titles[location.pathname] || 'AIPesa';
+  }, [location]);
+
+  return null;
+}
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, assessmentDone } = useStore();
@@ -37,6 +67,7 @@ function GuestRoute({ children }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <TitleUpdater />
       <Routes>
         <Route path="/" element={<GuestRoute><Landing /></GuestRoute>} />
         <Route path="/welcome" element={<Gateway />} />

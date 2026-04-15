@@ -131,6 +131,32 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* AdWords Compliance Section */}
+      <section style={{ padding: '4rem 1.5rem', borderTop: '1px solid var(--border)', background: 'var(--bg)' }}>
+        <div className="container" style={{ maxWidth: 900 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', textAlign: 'left' }}>
+            <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '1rem', border: '1px solid var(--border)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text)' }}>💰 Earnings Disclaimer</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                Rewards per task vary between KES 500 and KES 600 based on complexity and accuracy. Earnings shown are typical but not guaranteed. Actual income depends on the number of tasks successfully completed and quality scores. 
+              </p>
+            </div>
+            <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '1rem', border: '1px solid var(--border)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text)' }}>🔓 Premium Access</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                While our basic platform is free to join, some high-reward premium tasks require a small one-time quality-verification fee (KES 100-150) to unlock. This ensures a high standard of data for our AI partners.
+              </p>
+            </div>
+            <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '1rem', border: '1px solid var(--border)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text)' }}>📍 Verified Operation</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                AIPesa Data Solutions is a registered entity in Nairobi, Kenya. We operate with full transparency and process all withdrawals exclusively via M-Pesa to ensured secure, traceable payments.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section style={{ padding: '5rem 1.5rem', textAlign: 'center', background: 'linear-gradient(135deg, rgba(147,51,234,0.1), rgba(99,102,241,0.05))' }}>
         <div className="container">

@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /signup
+Allow: /terms
+Allow: /privacy
+Disallow: /dashboard
+Disallow: /tasks
+Disallow: /assessment
+Disallow: /earnings
+Disallow: /plans
+Disallow: /api/
+
+Sitemap: https://aipesa.co.ke/sitemap.xml
