@@ -26,7 +26,7 @@ export default function Navbar() {
         <div className="navbar-inner">
           <div className="navbar-brand">
             <div className="brand-icon">⚡</div>
-            <span>REMOTASK</span>
+            <span>AIPESA</span>
           </div>
 
           <div className="navbar-nav">

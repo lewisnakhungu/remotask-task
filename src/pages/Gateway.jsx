@@ -7,8 +7,8 @@ export default function Gateway() {
       <header style={{ position: 'sticky', top: 0, zIndex: 100, background: 'rgba(15,23,42,0.95)', borderBottom: '1px solid var(--border)', backdropFilter: 'blur(12px)' }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', fontWeight: 800, fontSize: '1.1rem' }}>
-            <div style={{ width: 34, height: 34, background: 'linear-gradient(135deg, #475569, #334155)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>R</div>
-            REMOTASK PLATFORM
+            <div style={{ width: 34, height: 34, background: 'linear-gradient(135deg, #475569, #334155)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>A</div>
+            AIPESA PLATFORM
           </div>
         </div>
       </header>
@@ -21,7 +21,7 @@ export default function Gateway() {
             Next-Generation AI
           </h1>
           <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '3rem', lineHeight: 1.6, maxWidth: 650, margin: '0 auto 3rem' }}>
-            Remotask provides a reliable crowdsourcing environment for complex data annotation, transcription, and categorization. Join our global independent contractor pool to contribute to cutting-edge artificial intelligence development. Work on your own schedule from anywhere.
+            AIPesa provides a reliable crowdsourcing environment for complex data annotation, transcription, and categorization. Join our global independent contractor pool to contribute to cutting-edge artificial intelligence development. Work on your own schedule from anywhere.
           </p>
           
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
@@ -43,8 +43,8 @@ export default function Gateway() {
             <Link to="/terms" style={{ color: 'var(--text-muted)', textDecoration: 'none' }}>Terms of Service</Link>
           </div>
           <div>Location: Victoria Towers, Upper Hill, Nairobi, Kenya</div>
-          <div>Contact: compliance@remotask-portal.com | +254 20 123 4567</div>
-          <div style={{ marginTop: '0.5rem' }}>© 2026 Remotask Data Solutions. Registration No: PVT-RTX2026</div>
+          <div>Contact: compliance@aipesa.co.ke | +254 20 123 4567</div>
+          <div style={{ marginTop: '0.5rem' }}>© 2026 AIPesa Data Solutions. Registration No: PVT-AI2026</div>
         </div>
       </footer>
     </div>

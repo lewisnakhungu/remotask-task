@@ -96,7 +96,7 @@ export default function Assessment() {
             <div className="pass-icon">🎉</div>
             <div className="pass-title">Assessment Passed!</div>
             <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>
-              Congratulations {user?.name?.split(' ')[0]}! You've qualified to earn on REMOTASK.
+              Congratulations {user?.name?.split(' ')[0]}! You've qualified to earn on AIPESA.
             </p>
             <div style={{ background: 'var(--success-light)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '1rem', padding: '1.5rem', margin: '1.5rem 0' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Welcome Bonus Credited! 🎁</div>
@@ -131,7 +131,7 @@ export default function Assessment() {
       <div style={{ maxWidth: 580, margin: '0 auto', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', fontWeight: 800, fontSize: '1rem' }}>
           <div style={{ width: 30, height: 30, background: 'linear-gradient(135deg, #9333ea, #7c3aed)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem' }}>⚡</div>
-          REMOTASK
+          AIPESA
         </div>
         <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Skill Verification</div>
       </div>

@@ -659,7 +659,7 @@ const useStore = create(
       },
     }),
     {
-      name: 'remotasks-storage',
+      name: 'aipesa-storage',
       merge: (persistedState, currentState) => ({
         ...currentState,
         ...persistedState,

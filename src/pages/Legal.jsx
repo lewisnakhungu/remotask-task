@@ -9,7 +9,7 @@ export default function Legal() {
       {/* Formal Navbar */}
       <header style={{ padding: '1rem', borderBottom: '1px solid var(--border)' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>REMOTASK</div>
+          <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>AIPESA</div>
           <Link to="/welcome" className="btn btn-ghost btn-sm">Return</Link>
         </div>
       </header>
@@ -23,7 +23,7 @@ export default function Legal() {
           <p style={{ marginBottom: '1.5rem' }}><strong>Last Updated: January 1, 2026</strong></p>
           
           <p style={{ marginBottom: '1.5rem' }}>
-            Welcome to Remotask Data Solutions ("Company", "we", "our", "us"). These {isPrivacy ? 'Privacy Policies' : 'Terms of Service'} govern your use of our platform located at remotask-portal.com and our mobile applications.
+            Welcome to AIPesa Data Solutions ("Company", "we", "our", "us"). These {isPrivacy ? 'Privacy Policies' : 'Terms of Service'} govern your use of our platform located at aipesa.co.ke and our mobile applications.
           </p>
 
           <h2 style={{ fontSize: '1.5rem', color: 'var(--text)', marginTop: '2.5rem', marginBottom: '1rem' }}>1. Introduction</h2>
@@ -43,7 +43,7 @@ export default function Legal() {
             If you have any questions regarding these terms or policies, please contact our compliance team:
           </p>
           <ul style={{ paddingLeft: '1.5rem' }}>
-            <li>Email: compliance@remotask-portal.com</li>
+            <li>Email: compliance@aipesa.co.ke</li>
             <li>Address: Victoria Towers, Upper Hill, Nairobi, Kenya</li>
             <li>Registration: PVT-RTX2026</li>
           </ul>

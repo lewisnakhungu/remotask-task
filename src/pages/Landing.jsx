@@ -28,7 +28,7 @@ export default function Landing() {
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', fontWeight: 800, fontSize: '1.1rem' }}>
             <div style={{ width: 34, height: 34, background: 'linear-gradient(135deg, #9333ea, #7c3aed)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⚡</div>
-            REMOTASK
+            AIPESA
           </div>
           <div style={{ display: 'flex', gap: '0.75rem' }}>
             <Link to="/login" className="btn btn-ghost btn-sm">Sign In</Link>
@@ -94,7 +94,7 @@ export default function Landing() {
       {/* Features */}
       <section style={{ padding: '5rem 1.5rem', background: 'rgba(30,41,59,0.3)' }}>
         <div className="container">
-          <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem' }}>Why Choose REMOTASK?</h2>
+          <h2 style={{ textAlign: 'center', fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem' }}>Why Choose AIPESA?</h2>
           <p style={{ textAlign: 'center', color: 'var(--text-muted)', marginBottom: '3rem' }}>Everything you need to start earning today</p>
           <div className="features-grid">
             {features.map(f => (
@@ -135,7 +135,7 @@ export default function Landing() {
       <section style={{ padding: '5rem 1.5rem', textAlign: 'center', background: 'linear-gradient(135deg, rgba(147,51,234,0.1), rgba(99,102,241,0.05))' }}>
         <div className="container">
           <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.75rem' }}>Ready to Start Earning?</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Join thousands of Kenyans already making money with REMOTASK</p>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Join thousands of Kenyans already making money with AIPESA</p>
           <Link to="/signup" className="btn btn-primary btn-lg">
             🚀 Get Started — It's Free
           </Link>
@@ -147,9 +147,9 @@ export default function Landing() {
         <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', margin: '0 auto 1rem' }}>
             <Link to="/privacy" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Privacy</Link>
             <Link to="/terms" style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>Terms</Link>
-            <span style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>compliance@remotask-portal.com</span>
+            <span style={{ color: 'var(--text-dim)', textDecoration: 'none' }}>compliance@aipesa.co.ke</span>
         </div>
-        <p>© 2026 REMOTASK. All rights reserved. | Nairobi, Kenya | PVT-RTX2026</p>
+        <p>© 2026 AIPESA. All rights reserved. | Nairobi, Kenya | PVT-RTX2026</p>
       </footer>
     </div>
   );

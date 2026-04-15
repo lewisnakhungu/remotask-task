@@ -33,7 +33,7 @@ export default function Login() {
       <div className="auth-card fade-in">
         <div className="auth-logo">
           <div style={{ width: 38, height: 38, background: 'linear-gradient(135deg, #9333ea, #7c3aed)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⚡</div>
-          REMOTASK
+          AIPESA
         </div>
 
         <h1 className="auth-title">Welcome Back</h1>

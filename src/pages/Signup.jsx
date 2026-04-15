@@ -44,7 +44,7 @@ export default function Signup() {
       <div className="auth-card fade-in" style={{ maxWidth: 480 }}>
         <div className="auth-logo">
           <div style={{ width: 38, height: 38, background: 'linear-gradient(135deg, #9333ea, #7c3aed)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>⚡</div>
-          REMOTASK
+          AIPESA
         </div>
 
         <div style={{ background: 'var(--success-light)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '0.75rem', padding: '0.9rem 1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
