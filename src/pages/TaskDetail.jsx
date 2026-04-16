@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import UpgradeModal from '../components/UpgradeModal';
+import PlansModal from '../components/PlansModal';
 import useStore from '../store/useStore';
 
 export default function TaskDetail() {
@@ -29,11 +29,11 @@ export default function TaskDetail() {
           <div className="empty-state">
             <div className="empty-state-icon">🔒</div>
             <div className="empty-state-title">Daily Task Limit Reached</div>
-            <div className="empty-state-desc" style={{ marginBottom: '1.5rem' }}>Upgrade your plan to complete more tasks today.</div>
-            <button className="btn btn-primary" onClick={() => setShowUpgrade(true)}>Upgrade Plan →</button>
+            <div className="empty-state-desc" style={{ marginBottom: '1.5rem' }}>Activate your account to complete more tasks today.</div>
+            <button className="btn btn-primary" onClick={() => setShowUpgrade(true)}>Activate Account →</button>
           </div>
         </div>
-        {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+        {showUpgrade && <PlansModal onClose={() => setShowUpgrade(false)} />}
       </div>
     );
   }
@@ -49,7 +49,7 @@ export default function TaskDetail() {
             <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Great work! Your earnings have been added to your balance.</p>
             <div style={{ background: 'var(--success-light)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '1rem', padding: '1.5rem', display: 'inline-block', marginBottom: '2rem' }}>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>You Earned</div>
-              <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--success)' }}>KES {Math.round(task.reward * 130)}</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--success)' }}>KES {task.reward}</div>
             </div>
             <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
               <button className="btn btn-primary" onClick={() => navigate('/tasks')}>More Tasks →</button>
@@ -100,7 +100,7 @@ export default function TaskDetail() {
               </div>
             </div>
             <div style={{ textAlign: 'right', flexShrink: 0 }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--success)' }}>KES {Math.round(task.reward * 130)}</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--success)' }}>KES {task.reward}</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Reward</div>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function TaskDetail() {
             disabled={!allAnswered}
             id="submit-task-btn"
           >
-            ✓ Submit Task & Earn KES {Math.round(task.reward * 130)}
+            ✓ Submit Task & Earn KES {task.reward}
           </button>
         </div>
       </div>

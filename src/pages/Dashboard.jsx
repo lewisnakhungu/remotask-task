@@ -4,14 +4,12 @@ import { TrendingUp, CheckCircle, Target, Clock, ArrowRight } from 'lucide-react
 import Navbar from '../components/Navbar';
 import LiveTicker from '../components/LiveTicker';
 import WithdrawModal from '../components/WithdrawModal';
-import UpgradeModal from '../components/UpgradeModal';
 import PlansModal from '../components/PlansModal';
 import useStore from '../store/useStore';
 
 export default function Dashboard() {
   const { user, balance, tasksCompletedToday, accuracyRate, plan, earnings, getDailyLimit, tasks, completedTaskIds, assessmentDone } = useStore();
   const [showWithdraw, setShowWithdraw] = useState(false);
-  const [showUpgrade, setShowUpgrade] = useState(false);
   const [showPlansPopup, setShowPlansPopup] = useState(false);
 
   // Trigger plans modal after screening + login
@@ -56,8 +54,8 @@ export default function Dashboard() {
               💸 Withdraw
             </button>
             {!plan && (
-              <button className="btn btn-primary" onClick={() => setShowUpgrade(true)} id="upgrade-btn">
-                🚀 Upgrade Plan
+              <button className="btn btn-primary" onClick={() => setShowPlansPopup(true)} id="upgrade-btn">
+                🚀 Activate Account
               </button>
             )}
           </div>
@@ -81,8 +79,8 @@ export default function Dashboard() {
               <div style={{ fontWeight: 700, marginBottom: '0.3rem' }}>🔒 Unlock Your Full Earnings Potential</div>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Free accounts are limited to 3 tasks/day. Upgrade to earn up to KES 8,000/month.</div>
             </div>
-            <button className="btn btn-primary" onClick={() => setShowUpgrade(true)}>
-              Upgrade Now →
+            <button className="btn btn-primary" onClick={() => setShowPlansPopup(true)}>
+              Activate Account →
             </button>
           </div>
         )}
@@ -108,7 +106,7 @@ export default function Dashboard() {
                 <div key={task.id} className="task-card">
                   <div className="task-card-header">
                     <span className="task-icon">{task.icon}</span>
-                    <span className="task-reward">KES {Math.round(task.reward * 130)}</span>
+                    <span className="task-reward">KES {task.reward}</span>
                   </div>
                   <div>
                     <div className="task-title">{task.title}</div>
@@ -164,10 +162,9 @@ export default function Dashboard() {
       {showWithdraw && (
         <WithdrawModal
           onClose={() => setShowWithdraw(false)}
-          onNeedUpgrade={() => setShowUpgrade(true)}
+          onNeedUpgrade={() => setShowPlansPopup(true)}
         />
       )}
-      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
       {showPlansPopup && <PlansModal onClose={() => setShowPlansPopup(false)} />}
     </div>
   );
