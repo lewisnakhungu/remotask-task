@@ -27,6 +27,16 @@ export default function Signup() {
     setLoading(true);
     setTimeout(() => {
       register({ name: form.name, phone: form.phone, email: form.email });
+      
+      // Google Ads Sign-up Conversion
+      if (window.gtag) {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-18094490998/woGHCJW0hZ0cEPaKkLRD',
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      }
+
       setLoading(false);
       navigate('/assessment');
     }, 1000);
