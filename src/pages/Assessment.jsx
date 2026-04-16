@@ -92,50 +92,53 @@ export default function Assessment() {
 
   if (done) {
     return (
-      <div className="assessment-page">
-        <div className="assessment-card fade-in">
-          <div className="pass-screen">
-            <div className="pass-icon">🎉</div>
-            <div className="pass-title">Assessment Passed!</div>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>
-              Congratulations {user?.name?.split(' ')[0]}! You've qualified to earn on AIPESA.
-            </p>
-            <div style={{ background: 'var(--success-light)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '1rem', padding: '1.5rem', margin: '1.5rem 0' }}>
-              <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Welcome Bonus Credited! 🎁</div>
-              <div className="bonus-amount">KES 600</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Added to your account balance</div>
+      <>
+        <div className="assessment-page">
+          <div className="assessment-card fade-in">
+            <div className="pass-screen">
+              <div className="pass-icon">🎉</div>
+              <div className="pass-title">Assessment Passed!</div>
+              <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                Congratulations {user?.name?.split(' ')[0]}! You've qualified to earn on AIPESA.
+              </p>
+              <div style={{ background: 'var(--success-light)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: '1rem', padding: '1.5rem', margin: '1.5rem 0' }}>
+                <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Welcome Bonus Credited! 🎁</div>
+                <div className="bonus-amount">KES 600</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Added to your account balance</div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <div style={{ background: 'var(--surface2)', padding: '0.75rem 1.25rem', borderRadius: '0.75rem', textAlign: 'center' }}>
+                  <div style={{ fontWeight: 800, color: 'var(--success)' }}>96%</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Accuracy</div>
+                </div>
+                <div style={{ background: 'var(--surface2)', padding: '0.75rem 1.25rem', borderRadius: '0.75rem', textAlign: 'center' }}>
+                  <div style={{ fontWeight: 800 }}>5/5</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Questions</div>
+                </div>
+                <div style={{ background: 'var(--surface2)', padding: '0.75rem 1.25rem', borderRadius: '0.75rem', textAlign: 'center' }}>
+                  <div style={{ fontWeight: 800, color: 'var(--primary)' }}>Verified</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Status</div>
+                </div>
+              </div>
+              <button className="btn btn-primary btn-full btn-lg" onClick={handleContinue} id="continue-dashboard-btn">
+                Activate &amp; Start Earning →
+              </button>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1.5rem' }}>
-              <div style={{ background: 'var(--surface2)', padding: '0.75rem 1.25rem', borderRadius: '0.75rem', textAlign: 'center' }}>
-                <div style={{ fontWeight: 800, color: 'var(--success)' }}>96%</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Accuracy</div>
-              </div>
-              <div style={{ background: 'var(--surface2)', padding: '0.75rem 1.25rem', borderRadius: '0.75rem', textAlign: 'center' }}>
-                <div style={{ fontWeight: 800 }}>5/5</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Questions</div>
-              </div>
-              <div style={{ background: 'var(--surface2)', padding: '0.75rem 1.25rem', borderRadius: '0.75rem', textAlign: 'center' }}>
-                <div style={{ fontWeight: 800, color: 'var(--primary)' }}>Verified</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Status</div>
-              </div>
-            </div>
-            <button className="btn btn-primary btn-full btn-lg" onClick={handleContinue} id="continue-dashboard-btn">
-              Activate & Start Earning →
-            </button>
           </div>
         </div>
-      </div>
 
-      {/* Immediate activation modal after assessment */}
-      {showPlans && (
-        <PlansModal
-          isGateway={true}
-          onClose={() => {
-            setShowPlans(false);
-            navigate('/dashboard');
-          }}
-        />
-      )}
+        {/* Immediate activation modal after assessment */}
+        {showPlans && (
+          <PlansModal
+            isGateway={true}
+            onClose={() => {
+              setShowPlans(false);
+              navigate('/dashboard');
+            }}
+          />
+        )}
+      </>
+    );
   }
 
   return (
