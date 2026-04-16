@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store/useStore';
+import PlansModal from '../components/PlansModal';
 
 const QUESTIONS = [
   {
@@ -45,6 +46,7 @@ export default function Assessment() {
   const [answers, setAnswers] = useState({});
   const [selectedWords, setSelectedWords] = useState([]);
   const [done, setDone] = useState(false);
+  const [showPlans, setShowPlans] = useState(false);
   const { completeAssessment, user } = useStore();
   const navigate = useNavigate();
 
@@ -85,7 +87,7 @@ export default function Assessment() {
 
   const handleContinue = () => {
     completeAssessment();
-    navigate('/dashboard');
+    setShowPlans(true); // Show activation modal immediately
   };
 
   if (done) {
@@ -118,12 +120,22 @@ export default function Assessment() {
               </div>
             </div>
             <button className="btn btn-primary btn-full btn-lg" onClick={handleContinue} id="continue-dashboard-btn">
-              Continue to Dashboard →
+              Activate & Start Earning →
             </button>
           </div>
         </div>
       </div>
-    );
+
+      {/* Immediate activation modal after assessment */}
+      {showPlans && (
+        <PlansModal
+          isGateway={true}
+          onClose={() => {
+            setShowPlans(false);
+            navigate('/dashboard');
+          }}
+        />
+      )}
   }
 
   return (

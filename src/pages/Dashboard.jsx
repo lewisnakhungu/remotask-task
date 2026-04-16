@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, CheckCircle, Target, Clock, ArrowRight } from 'lucide-react';
 import Navbar from '../components/Navbar';
@@ -8,21 +8,9 @@ import PlansModal from '../components/PlansModal';
 import useStore from '../store/useStore';
 
 export default function Dashboard() {
-  const { user, balance, tasksCompletedToday, accuracyRate, plan, earnings, getDailyLimit, tasks, completedTaskIds, assessmentDone } = useStore();
+  const { user, balance, tasksCompletedToday, accuracyRate, plan, earnings, getDailyLimit, tasks, completedTaskIds } = useStore();
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [showPlansPopup, setShowPlansPopup] = useState(false);
-
-  // Trigger plans modal after screening + login
-  useEffect(() => {
-    const hasPrompted = sessionStorage.getItem('plansPrompted');
-    if (assessmentDone && !plan && !hasPrompted) {
-      const timer = setTimeout(() => {
-        setShowPlansPopup(true);
-        sessionStorage.setItem('plansPrompted', 'true');
-      }, 1000); // Small delay for effect
-      return () => clearTimeout(timer);
-    }
-  }, [assessmentDone, plan]);
 
   const availableTasks = tasks.filter(t => !completedTaskIds.includes(t.id)).slice(0, 3);
   const dailyLimit = getDailyLimit();
