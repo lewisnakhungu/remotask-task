@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { Check, Zap, Sparkles, Trophy, Crown, AlertCircle, Shield } from 'lucide-react';
 import useStore from '../store/useStore';
 import { PLANS } from '../store/useStore';
+import AlertModal from './AlertModal';
 
 export default function PlansModal({ onClose, isGateway = false }) {
   const { plan, selectPlan, user } = useStore();
@@ -10,6 +11,7 @@ export default function PlansModal({ onClose, isGateway = false }) {
   const [phone, setPhone] = useState(user?.phone || '');
   const [loading, setLoading] = useState(false);
   const [statusText, setStatusText] = useState('');
+  const [alertInfo, setAlertInfo] = useState(null);
   const pollingRef = useRef(false);
   const maxAttempts = 15;
 
@@ -41,8 +43,14 @@ export default function PlansModal({ onClose, isGateway = false }) {
   };
 
   const handlePayment = async () => {
-    if (!phone) return alert('Please enter your M-Pesa phone number.');
-    if (phone.replace(/\s/g, '').length < 9) return alert('Invalid phone number.');
+    if (!phone) {
+      setAlertInfo({ type: 'info', title: 'Phone Required', message: 'Please enter your M-Pesa phone number to continue.' });
+      return;
+    }
+    if (phone.replace(/\s/g, '').length < 9) {
+      setAlertInfo({ type: 'error', title: 'Invalid Number', message: 'The phone number you entered is too short. Please enter a valid Safaricom number.' });
+      return;
+    }
 
     setLoading(true);
     setStatusText('Initiating payment...');
@@ -71,7 +79,11 @@ export default function PlansModal({ onClose, isGateway = false }) {
           if (attemptCount > maxAttempts) {
             setLoading(false);
             setStatusText('');
-            alert('Payment confirmation timed out. Please try again.');
+            setAlertInfo({
+              type: 'error',
+              title: 'Payment Timed Out',
+              message: 'We did not receive confirmation from M-Pesa. If you entered your PIN, wait a moment and try again. Otherwise, no charge was made.',
+            });
             return;
           }
 
@@ -87,7 +99,11 @@ export default function PlansModal({ onClose, isGateway = false }) {
             } else if (statusData.status === 'failed') {
               setLoading(false);
               setStatusText('');
-              alert('Payment failed or was cancelled.');
+              setAlertInfo({
+                type: 'error',
+                title: 'Payment Cancelled',
+                message: 'Your M-Pesa payment was cancelled or declined. Please try again and enter your PIN when prompted.',
+              });
             } else {
               setTimeout(pollStatus, 7000);
             }
@@ -100,13 +116,21 @@ export default function PlansModal({ onClose, isGateway = false }) {
       } else {
         setLoading(false);
         setStatusText('');
-        alert('Failed to initiate payment. Please try again.');
+        setAlertInfo({
+          type: 'error',
+          title: 'Payment Failed to Start',
+          message: 'We could not send the M-Pesa prompt to your phone. Please check your number and try again.',
+        });
       }
     } catch (err) {
       console.error('Payment Error', err);
       setLoading(false);
       setStatusText('');
-      alert('An error occurred. Please try again.');
+      setAlertInfo({
+        type: 'error',
+        title: 'Connection Error',
+        message: 'Something went wrong while processing your payment. Please check your internet and try again.',
+      });
     }
   };
 
@@ -315,6 +339,15 @@ export default function PlansModal({ onClose, isGateway = false }) {
           )}
         </div>
       </div>
+
+      {alertInfo && (
+        <AlertModal
+          type={alertInfo.type}
+          title={alertInfo.title}
+          message={alertInfo.message}
+          onClose={() => setAlertInfo(null)}
+        />
+      )}
     </div>
   );
 }
