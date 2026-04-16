@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Clock, CheckCircle, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import UpgradeModal from '../components/UpgradeModal';
+import PlansModal from '../components/PlansModal';
 import UnlockTaskModal from '../components/UnlockTaskModal';
 import useStore from '../store/useStore';
 
@@ -18,12 +18,12 @@ const CATEGORY_COLORS = {
 export default function Tasks() {
   const { tasks, completedTaskIds, unlockedTaskIds, canDoMoreTasks, plan, getDailyLimit, tasksCompletedToday } = useStore();
   const [filter, setFilter] = useState('all');
-  const [showUpgrade, setShowUpgrade] = useState(false);
   const [unlockTaskInfo, setUnlockTaskInfo] = useState(null);
 
   const categories = ['all', ...new Set(tasks.map(t => t.category))];
   const filtered = filter === 'all' ? tasks : tasks.filter(t => t.category === filter);
   const dailyLimit = getDailyLimit();
+  const needsActivation = !plan;
 
   return (
     <div style={{ background: 'var(--bg)', minHeight: '100vh' }}>
@@ -35,14 +35,9 @@ export default function Tasks() {
             <h1 className="page-title">Available Tasks</h1>
             <p className="page-sub">
               {tasksCompletedToday}/{dailyLimit} tasks completed today
-              {!plan && <span style={{ color: 'var(--primary)', marginLeft: '0.5rem', fontWeight: 600 }}>• Upgrade for more</span>}
+              {!plan && <span style={{ color: 'var(--primary)', marginLeft: '0.5rem', fontWeight: 600 }}>• Activate to unlock</span>}
             </p>
           </div>
-          {!plan && (
-            <button className="btn btn-primary btn-sm" onClick={() => setShowUpgrade(true)}>
-              🚀 Upgrade Plan
-            </button>
-          )}
         </div>
 
         {/* Daily progress */}
@@ -100,8 +95,8 @@ export default function Tasks() {
                       <Lock size={12} /> Unlock KES {task.unlockFee}
                     </button>
                   ) : blocked ? (
-                    <button className="btn btn-sm" style={{ background: 'var(--surface2)', border: '1px solid var(--border)', color: 'var(--text-muted)', gap: '0.3rem', display: 'flex', alignItems: 'center' }} onClick={() => setShowUpgrade(true)}>
-                      <Lock size={12} /> Upgrade
+                    <button className="btn btn-sm" style={{ background: 'var(--surface2)', border: '1px solid var(--border)', color: 'var(--text-muted)', gap: '0.3rem', display: 'flex', alignItems: 'center' }} disabled>
+                      <Lock size={12} /> Limit Reached
                     </button>
                   ) : (
                     <Link to={`/tasks/${task.id}`} className="btn btn-primary btn-sm" id={`task-${task.id}-start`}>
@@ -115,8 +110,11 @@ export default function Tasks() {
         </div>
       </div>
 
-      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} />}
+      {/* Gateway overlay — shown automatically if no active plan */}
+      {needsActivation && <PlansModal isGateway={true} onClose={() => {}} />}
+
       {unlockTaskInfo && <UnlockTaskModal task={unlockTaskInfo} onClose={() => setUnlockTaskInfo(null)} />}
     </div>
   );
 }
+

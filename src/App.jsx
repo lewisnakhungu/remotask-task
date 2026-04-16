@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import useStore from './store/useStore';
 import Landing from './pages/Landing';
-import Gateway from './pages/Gateway';
 import Legal from './pages/Legal';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -70,7 +69,6 @@ export default function App() {
       <TitleUpdater />
       <Routes>
         <Route path="/" element={<GuestRoute><Landing /></GuestRoute>} />
-        <Route path="/welcome" element={<Gateway />} />
         <Route path="/terms" element={<Legal />} />
         <Route path="/privacy" element={<Legal />} />
         <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />

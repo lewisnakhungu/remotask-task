@@ -1,37 +1,27 @@
-import { useState } from 'react';
-import { X, Check, Zap, Sparkles, Trophy, Crown } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Check, Zap, Sparkles, Trophy, Crown, AlertCircle, Shield } from 'lucide-react';
 import useStore from '../store/useStore';
 import { PLANS } from '../store/useStore';
 
-export default function PlansModal({ onClose }) {
-  const { plan, selectPlan } = useStore();
+export default function PlansModal({ onClose, isGateway = false }) {
+  const { plan, selectPlan, user } = useStore();
   const [step, setStep] = useState('list'); // list | payment | success
   const [selected, setSelected] = useState(null);
+  const [phone, setPhone] = useState(user?.phone || '');
   const [loading, setLoading] = useState(false);
-
-  const handleSelect = (planId) => {
-    setSelected(planId);
-    setStep('payment');
-  };
-
-  const handlePayment = () => {
-    setLoading(true);
-    setTimeout(() => {
-      selectPlan(selected);
-      setLoading(false);
-      setStep('success');
-    }, 2000);
-  };
+  const [statusText, setStatusText] = useState('');
+  const pollingRef = useRef(false);
+  const maxAttempts = 15;
 
   const selectedPlan = PLANS.find(p => p.id === selected);
 
   const getIcon = (id) => {
     switch (id) {
-      case 'beginner': return <Zap size={20} />;
-      case 'average': return <Sparkles size={20} />;
-      case 'expert': return <Trophy size={20} />;
-      case 'elite': return <Crown size={20} />;
-      default: return <Zap size={20} />;
+      case 'beginner': return <Zap size={22} />;
+      case 'average': return <Sparkles size={22} />;
+      case 'expert': return <Trophy size={22} />;
+      case 'elite': return <Crown size={22} />;
+      default: return <Zap size={22} />;
     }
   };
 
@@ -41,129 +31,284 @@ export default function PlansModal({ onClose }) {
       case 'average': return 'linear-gradient(135deg, #3b82f6, #2563eb)';
       case 'expert': return 'linear-gradient(135deg, #9333ea, #7c3aed)';
       case 'elite': return 'linear-gradient(135deg, #f59e0b, #d97706)';
-      default: return 'linear-gradient(135deg, var(--primary), #7c3aed)';
+      default: return 'linear-gradient(135deg, #9333ea, #7c3aed)';
     }
   };
 
-  return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal slide-up" style={{ maxWidth: step === 'list' ? 980 : 480, padding: 0, overflow: 'hidden', background: 'transparent', border: 'none' }}>
-        <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '1.5rem', overflow: 'hidden', position: 'relative' }}>
-          
-          {/* Close button */}
-          <button 
-            onClick={onClose} 
-            style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', zIndex: 10, background: 'rgba(0,0,0,0.2)', border: 'none', color: '#fff', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
-            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.4)'}
-            onMouseOut={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.2)'}
-          >
-            <X size={18} />
-          </button>
+  const handleSelect = (planId) => {
+    setSelected(planId);
+    setStep('payment');
+  };
 
+  const handlePayment = async () => {
+    if (!phone) return alert('Please enter your M-Pesa phone number.');
+    if (phone.replace(/\s/g, '').length < 9) return alert('Invalid phone number.');
+
+    setLoading(true);
+    setStatusText('Initiating payment...');
+    pollingRef.current = true;
+
+    try {
+      const pushRes = await fetch('/api/stk-push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: selectedPlan.price,
+          phone_number: phone,
+          customer_name: user?.name || 'Customer',
+        }),
+      });
+      const pushData = await pushRes.json();
+
+      if (pushData.status?.toUpperCase() === 'SUCCESS' || pushData.status === 'QUEUED' || pushData.success === true) {
+        const reference = pushData.reference;
+        setStatusText('Check your phone and enter M-Pesa PIN...');
+        let attemptCount = 0;
+
+        const pollStatus = async () => {
+          if (!pollingRef.current) return;
+          attemptCount++;
+          if (attemptCount > maxAttempts) {
+            setLoading(false);
+            setStatusText('');
+            alert('Payment confirmation timed out. Please try again.');
+            return;
+          }
+
+          try {
+            const statusRes = await fetch(`/api/payment-status?reference=${reference}`);
+            const statusData = await statusRes.json();
+            if (!pollingRef.current) return;
+
+            if (statusData.status === 'success') {
+              selectPlan(selected);
+              setLoading(false);
+              setStep('success');
+            } else if (statusData.status === 'failed') {
+              setLoading(false);
+              setStatusText('');
+              alert('Payment failed or was cancelled.');
+            } else {
+              setTimeout(pollStatus, 7000);
+            }
+          } catch {
+            if (pollingRef.current) setTimeout(pollStatus, 7000);
+          }
+        };
+
+        setTimeout(pollStatus, 5000);
+      } else {
+        setLoading(false);
+        setStatusText('');
+        alert('Failed to initiate payment. Please try again.');
+      }
+    } catch (err) {
+      console.error('Payment Error', err);
+      setLoading(false);
+      setStatusText('');
+      alert('An error occurred. Please try again.');
+    }
+  };
+
+  const handleClose = () => {
+    pollingRef.current = false;
+    if (onClose) onClose();
+  };
+
+  return (
+    <div
+      className="modal-overlay"
+      onClick={(e) => !isGateway && e.target === e.currentTarget && handleClose()}
+      style={{
+        backdropFilter: 'blur(2px)',
+        background: 'rgba(0, 0, 0, 0.6)',
+      }}
+    >
+      <div
+        className="modal slide-up"
+        style={{
+          maxWidth: step === 'list' ? 1000 : 500,
+          padding: 0,
+          overflow: 'hidden',
+          background: 'transparent',
+          border: 'none',
+          boxShadow: 'none',
+        }}
+      >
+        <div
+          style={{
+            background: 'rgba(15, 23, 42, 0.92)',
+            border: '1px solid rgba(148, 163, 184, 0.12)',
+            borderRadius: '1.75rem',
+            overflow: 'hidden',
+            backdropFilter: 'blur(20px)',
+          }}
+        >
+          {/* Step: Plan List */}
           {step === 'list' && (
             <div style={{ padding: '2.5rem' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                <h2 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Upgrade Your Potential
+
+              {/* Header */}
+              <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
+                {isGateway && (
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(147,51,234,0.15)', border: '1px solid rgba(147,51,234,0.25)', borderRadius: '2rem', padding: '0.4rem 1rem', fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600, marginBottom: '1rem' }}>
+                    🔒 Activation Required to Access Tasks
+                  </div>
+                )}
+                <h2 style={{ fontSize: '2.1rem', fontWeight: 900, marginBottom: '0.5rem', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Choose Your Commitment Tier
                 </h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>
-                  Select a plan that fits your earning goals
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: 550, margin: '0 auto' }}>
+                  Activate your account by selecting a tier below. This is a one-time quality commitment fee.
                 </p>
               </div>
 
+              {/* Refund note */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '0.85rem', padding: '0.85rem 1rem', marginBottom: '2rem', maxWidth: 650, margin: '0 auto 2rem' }}>
+                <Shield size={16} color="#22c55e" style={{ flexShrink: 0, marginTop: 2 }} />
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+                  <strong style={{ color: '#22c55e' }}>Commitment Fee is Refundable.</strong> The activation fee is a quality assurance deposit — not a charge. It confirms your commitment as a verified data contributor. You may request a refund at any time via <strong>compliance@aipesa.co.ke</strong>.
+                </p>
+              </div>
+
+              {/* Plan cards */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1.25rem' }}>
                 {PLANS.map(p => (
-                  <div 
-                    key={p.id} 
-                    className={`plan-card ${p.popular ? 'popular' : ''}`}
-                    style={{ 
-                      cursor: 'pointer',
-                      borderWidth: p.id === plan ? '2px' : '1px',
-                      borderColor: p.id === plan ? 'var(--success)' : p.popular ? 'var(--primary)' : 'var(--border)',
-                      background: p.id === plan ? 'rgba(34, 197, 94, 0.05)' : 'var(--surface2)',
-                      padding: '1.75rem 1.25rem'
-                    }}
+                  <div
+                    key={p.id}
                     onClick={() => p.id !== plan && handleSelect(p.id)}
+                    style={{
+                      cursor: p.id === plan ? 'default' : 'pointer',
+                      borderRadius: '1.25rem',
+                      border: p.id === plan
+                        ? '2px solid #22c55e'
+                        : p.popular
+                        ? '2px solid var(--primary)'
+                        : '1px solid rgba(148,163,184,0.12)',
+                      background: p.id === plan ? 'rgba(34,197,94,0.05)' : 'rgba(30,41,59,0.8)',
+                      padding: '1.75rem 1.25rem',
+                      transition: 'all 0.2s',
+                      position: 'relative',
+                    }}
+                    onMouseOver={e => { if (p.id !== plan) e.currentTarget.style.borderColor = 'rgba(147,51,234,0.5)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.borderColor = p.id === plan ? '#22c55e' : p.popular ? 'var(--primary)' : 'rgba(148,163,184,0.12)';
+                    }}
                   >
-                    {p.popular && <div className="plan-popular-badge">Top Pick</div>}
-                    
-                    <div style={{ width: 40, height: 40, borderRadius: '12px', background: getGradient(p.id), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+                    {p.popular && (
+                      <div style={{ position: 'absolute', top: '-12px', left: '50%', transform: 'translateX(-50%)', background: 'var(--primary)', color: '#fff', fontSize: '0.65rem', padding: '0.25rem 0.75rem', borderRadius: '2rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                        ⭐ Top Pick
+                      </div>
+                    )}
+
+                    <div style={{ width: 44, height: 44, borderRadius: '12px', background: getGradient(p.id), display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.25)' }}>
                       {getIcon(p.id)}
                     </div>
 
-                    <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>{p.name}</div>
-                    <div style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '1rem' }}>
-                      KES {p.price} <span style={{ fontSize: '0.8rem', fontWeight: 400, color: 'var(--text-dim)' }}>/mo</span>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.25rem' }}>{p.name}</div>
+                    <div style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.25rem' }}>
+                      KES {p.price}
                     </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '1.25rem' }}>one-time commitment fee</div>
 
-                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', padding: 0 }}>
+                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1.5rem', padding: 0 }}>
                       {p.features.slice(0, 4).map(f => (
-                        <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          <Check size={14} style={{ color: 'var(--success)', flexShrink: 0 }} />
-                          {f}
+                        <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                          <Check size={13} style={{ color: '#22c55e', flexShrink: 0 }} /> {f}
                         </li>
                       ))}
                     </ul>
 
                     {plan === p.id ? (
-                      <div style={{ textAlign: 'center', color: 'var(--success)', fontSize: '0.875rem', fontWeight: 700, padding: '0.75rem', borderRadius: '0.75rem', background: 'var(--success-light)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                      <div style={{ textAlign: 'center', color: '#22c55e', fontSize: '0.875rem', fontWeight: 700, padding: '0.6rem', borderRadius: '0.75rem', background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)' }}>
                         ✓ Active Plan
                       </div>
                     ) : (
-                      <button 
-                        className={`btn btn-full ${p.popular ? 'btn-primary' : 'btn-secondary'}`}
-                        style={{ padding: '0.75rem' }}
-                      >
-                        Choose Plan
+                      <button className={`btn btn-full ${p.popular ? 'btn-primary' : 'btn-secondary'}`} style={{ padding: '0.7rem' }}>
+                        Activate — KES {p.price}
                       </button>
                     )}
                   </div>
                 ))}
               </div>
+
+              {!isGateway && (
+                <div style={{ textAlign: 'center', marginTop: '1.75rem' }}>
+                  <button onClick={handleClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '0.85rem', cursor: 'pointer' }}>
+                    Maybe later
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
+          {/* Step: Payment */}
           {step === 'payment' && selectedPlan && (
-            <div style={{ padding: '2.5rem' }}>
-              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.5rem' }}>📱 Complete Payment</h2>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Follow the M-Pesa instructions below</p>
+            <div style={{ padding: '2.5rem', maxWidth: 480, margin: '0 auto' }}>
+              <button onClick={() => setStep('list')} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
+                ← Back to plans
+              </button>
+
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.25rem' }}>📱 M-Pesa Payment</h2>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.75rem' }}>A prompt will be sent to your phone to confirm.</p>
+
+              {/* Plan summary */}
+              <div style={{ background: 'rgba(30,41,59,0.8)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.5rem', textAlign: 'center', border: '1px solid rgba(148,163,184,0.12)' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>{selectedPlan.name} Activation</div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, color: 'var(--primary)' }}>KES {selectedPlan.price}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>Refundable commitment fee</div>
               </div>
 
-              <div style={{ background: 'var(--surface2)', borderRadius: '1.25rem', padding: '1.5rem', marginBottom: '1.5rem', border: '1px solid var(--border)', textAlign: 'center' }}>
-                <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.25rem' }}>{selectedPlan.name} Plan</div>
-                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--primary)' }}>KES {selectedPlan.price}</div>
+              {/* Refund reminder */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)', borderRadius: '0.75rem', padding: '0.75rem', marginBottom: '1.5rem' }}>
+                <Shield size={14} color="#22c55e" style={{ flexShrink: 0, marginTop: 2 }} />
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+                  This fee is a <strong style={{ color: '#22c55e' }}>refundable commitment deposit</strong>. Contact compliance@aipesa.co.ke to request a refund at any time.
+                </p>
               </div>
 
-              <div style={{ background: 'rgba(34,197,94,0.05)', border: '1px solid rgba(34,197,94,0.15)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.5rem' }}>
-                <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.75rem', color: 'var(--success)' }}>M-Pesa Paybill</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-muted)' }}>Business No:</span> <strong>247247</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-muted)' }}>Account No:</span> <strong>Your Phone</strong></div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}><span style={{ color: 'var(--text-muted)' }}>Amount:</span> <strong>KES {selectedPlan.price}</strong></div>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 600 }}>M-Pesa Phone Number</label>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--border)', borderRadius: '0.6rem', overflow: 'hidden', background: 'var(--surface2)' }}>
+                  <span style={{ padding: '0 0.85rem', fontSize: '0.85rem', color: 'var(--text-muted)', borderRight: '1px solid var(--border)', height: '100%', display: 'flex', alignItems: 'center', minHeight: 48 }}>🇰🇪 +254</span>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={e => setPhone(e.target.value)}
+                    placeholder="712 345 678"
+                    disabled={loading}
+                    style={{ flex: 1, padding: '0.85rem', border: 'none', background: 'transparent', color: 'var(--text)', outline: 'none', fontSize: '0.95rem' }}
+                  />
                 </div>
               </div>
 
-              <button className="btn btn-success btn-full btn-lg" onClick={handlePayment} disabled={loading}>
-                {loading ? '⏳ Verifying...' : '✓ I Have Paid'}
+              <button
+                className="btn btn-primary btn-full btn-lg"
+                onClick={handlePayment}
+                disabled={loading}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+              >
+                {loading && <span style={{ display: 'inline-block', width: 18, height: 18, border: '2px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />}
+                {loading ? (statusText || 'Processing...') : `Pay KES ${selectedPlan.price} via M-Pesa`}
               </button>
-              
-              <button className="btn btn-ghost btn-full" style={{ marginTop: '0.75rem', border: 'none' }} onClick={() => setStep('list')}>
-                ← Back to plans
-              </button>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center', marginTop: '1.25rem' }}>
+                <AlertCircle size={13} color="var(--text-dim)" />
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>Secured via PayHero. Do not share your M-Pesa PIN with anyone.</span>
+              </div>
             </div>
           )}
 
+          {/* Step: Success */}
           {step === 'success' && (
-            <div style={{ padding: '3rem 2rem', textAlign: 'center' }}>
-              <div style={{ width: 80, height: 80, background: 'var(--success-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: 'var(--success)' }}>
-                <Check size={40} strokeWidth={3} />
-              </div>
-              <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.75rem' }}>Upgrade Successful!</h2>
-              <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-                Your account has been upgraded to the <strong>{selectedPlan?.name}</strong> plan. You can now start earning more today.
+            <div style={{ padding: '3rem 2.5rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '4.5rem', marginBottom: '1rem' }}>🎉</div>
+              <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Account Activated!</h2>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
+                Welcome to AIPesa. Your <strong>{selectedPlan?.name}</strong> account is now active. You can start completing tasks and earning real M-Pesa rewards.
               </p>
-              <button className="btn btn-primary btn-full btn-lg" onClick={onClose}>
+              <button className="btn btn-primary btn-full btn-lg" onClick={handleClose}>
                 Start Earning Now →
               </button>
             </div>
