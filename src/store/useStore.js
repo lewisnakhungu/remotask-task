@@ -516,9 +516,9 @@ const TASKS_DATA = [
 TASKS_DATA.forEach(task => {
   const seed1 = Math.abs(Math.sin(task.id * 100));
   const seed2 = Math.abs(Math.cos(task.id * 100));
-  task.reward = Math.floor(seed1 * (600 - 500 + 1)) + 500;
+  task.reward = Math.floor(seed1 * (600 - 400 + 1)) + 400;
   task.unlockFee = Math.floor(seed2 * (150 - 100 + 1)) + 100;
-  task.isPremium = seed1 > 0.3; // Approx 70% locked
+  task.isPremium = task.id !== 1; // Leave only one open
 });
 
 const WITHDRAWAL_DATA = [
@@ -533,10 +533,10 @@ const WITHDRAWAL_DATA = [
 ];
 
 const PLANS = [
-  { id: 'beginner', name: 'Beginner', price: 300, tasksPerDay: 9, features: ['9 tasks/day', 'Basic surveys', 'M-Pesa withdrawals', 'Email support'] },
-  { id: 'average', name: 'Average Skilled', price: 550, tasksPerDay: 15, features: ['15 tasks/day', 'All task types', 'Priority withdrawals', 'Chat support'], popular: true },
-  { id: 'expert', name: 'Expert', price: 800, tasksPerDay: 25, features: ['25 tasks/day', 'Premium tasks', 'Same-day withdrawals', '24/7 support'] },
-  { id: 'elite', name: 'Elite', price: 1200, tasksPerDay: 40, features: ['40 tasks/day', 'Elite-only tasks', 'Instant withdrawals', 'Dedicated manager'] },
+  { id: 'beginner', name: 'Beginner', price: 300, tasksPerDay: 9, features: ['Guaranteed 9 tasks/day', 'High-paying surveys', 'Instant M-Pesa withdrawals', 'Basic email support'] },
+  { id: 'average', name: 'Pro Tier', price: 550, tasksPerDay: 15, features: ['Guaranteed 15 tasks/day', 'Access to ALL task categories', 'Priority fast withdrawals', 'Live chat support'], popular: true },
+  { id: 'expert', name: 'Expert Tier', price: 800, tasksPerDay: 25, features: ['Guaranteed 25 tasks/day', 'Exclusive premium tasks', 'Zero-fee withdrawals', '24/7 Priority support'] },
+  { id: 'elite', name: 'Elite Tier', price: 1200, tasksPerDay: 40, features: ['Guaranteed 40 tasks/day', 'Highest-paying corporate tasks', 'Instant zero-fee withdrawals', 'Dedicated Success Manager'] },
 ];
 
 const useStore = create(

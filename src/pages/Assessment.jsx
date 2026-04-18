@@ -121,7 +121,7 @@ export default function Assessment() {
                 </div>
               </div>
               <button className="btn btn-primary btn-full btn-lg" onClick={handleContinue} id="continue-dashboard-btn">
-                Activate &amp; Start Earning →
+                Select Account Tier &amp; Start Earning →
               </button>
             </div>
           </div>

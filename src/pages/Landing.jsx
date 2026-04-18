@@ -142,9 +142,9 @@ export default function Landing() {
               </p>
             </div>
             <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '1rem', border: '1px solid var(--border)' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text)' }}>🔓 Premium Access</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--text)' }}>🔓 Account Tiers</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                While our basic platform is free to join, some high-reward premium tasks require a small one-time quality-verification fee (KES 100-150) to unlock. This ensures a high standard of data for our AI partners.
+                AIPesa operates on a tiered account system. Access to high-paying tasks and priority withdrawals requires purchasing a subscription tier. Your earning potential scales with your selected tier.
               </p>
             </div>
             <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '1rem', border: '1px solid var(--border)' }}>

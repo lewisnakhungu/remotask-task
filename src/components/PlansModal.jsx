@@ -153,7 +153,6 @@ export default function PlansModal({ onClose, isGateway = false }) {
         style={{
           maxWidth: step === 'list' ? 1000 : 500,
           padding: 0,
-          overflow: 'hidden',
           background: 'transparent',
           border: 'none',
           boxShadow: 'none',
@@ -164,13 +163,14 @@ export default function PlansModal({ onClose, isGateway = false }) {
             background: 'rgba(15, 23, 42, 0.92)',
             border: '1px solid rgba(148, 163, 184, 0.12)',
             borderRadius: '1.75rem',
-            overflow: 'hidden',
+            overflowY: 'auto',
+            maxHeight: '90vh',
             backdropFilter: 'blur(20px)',
           }}
         >
           {/* Step: Plan List */}
           {step === 'list' && (
-            <div style={{ padding: '2.5rem' }}>
+            <div className="modal-pad">
 
               {/* Header */}
               <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
@@ -180,20 +180,15 @@ export default function PlansModal({ onClose, isGateway = false }) {
                   </div>
                 )}
                 <h2 style={{ fontSize: '2.1rem', fontWeight: 900, marginBottom: '0.5rem', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  Choose Your Commitment Tier
+                  Select Your Account Tier
                 </h2>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', maxWidth: 550, margin: '0 auto' }}>
-                  Activate your account by selecting a tier below. This is a one-time quality commitment fee.
+                  Purchase an account tier below to instantly unlock high-paying tasks and start earning.
                 </p>
               </div>
 
-              {/* Refund note */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', background: 'rgba(34,197,94,0.07)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '0.85rem', padding: '0.85rem 1rem', marginBottom: '2rem', maxWidth: 650, margin: '0 auto 2rem' }}>
-                <Shield size={16} color="#22c55e" style={{ flexShrink: 0, marginTop: 2 }} />
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
-                  <strong style={{ color: '#22c55e' }}>Commitment Fee is Refundable.</strong> The activation fee is a quality assurance deposit — not a charge. It confirms your commitment as a verified data contributor. You may request a refund at any time via <strong>compliance@aipesa.co.ke</strong>.
-                </p>
-              </div>
+              {/* Margin adjustment for removed refund note */}
+              <div style={{ marginBottom: '2rem' }}></div>
 
               {/* Plan cards */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1.25rem' }}>
@@ -234,7 +229,7 @@ export default function PlansModal({ onClose, isGateway = false }) {
                     <div style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.25rem' }}>
                       KES {p.price}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '1.25rem' }}>one-time commitment fee</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginBottom: '1.25rem' }}>account purchase</div>
 
                     <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '1.5rem', padding: 0 }}>
                       {p.features.slice(0, 4).map(f => (
@@ -250,7 +245,7 @@ export default function PlansModal({ onClose, isGateway = false }) {
                       </div>
                     ) : (
                       <button className={`btn btn-full ${p.popular ? 'btn-primary' : 'btn-secondary'}`} style={{ padding: '0.7rem' }}>
-                        Activate — KES {p.price}
+                        Purchase — KES {p.price}
                       </button>
                     )}
                   </div>
@@ -269,28 +264,22 @@ export default function PlansModal({ onClose, isGateway = false }) {
 
           {/* Step: Payment */}
           {step === 'payment' && selectedPlan && (
-            <div style={{ padding: '2.5rem', maxWidth: 480, margin: '0 auto' }}>
+            <div className="modal-pad" style={{ maxWidth: 480, margin: '0 auto' }}>
               <button onClick={() => setStep('list')} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
                 ← Back to plans
               </button>
 
               <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.25rem' }}>📱 M-Pesa Payment</h2>
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.75rem' }}>A prompt will be sent to your phone to confirm.</p>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.75rem' }}>Complete your account purchase securely via M-Pesa.</p>
 
               {/* Plan summary */}
               <div style={{ background: 'rgba(30,41,59,0.8)', borderRadius: '1rem', padding: '1.25rem', marginBottom: '1.5rem', textAlign: 'center', border: '1px solid rgba(148,163,184,0.12)' }}>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>{selectedPlan.name} Activation</div>
                 <div style={{ fontSize: '2.25rem', fontWeight: 900, color: 'var(--primary)' }}>KES {selectedPlan.price}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>Refundable commitment fee</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>Account upgrade purchase</div>
               </div>
 
-              {/* Refund reminder */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.15)', borderRadius: '0.75rem', padding: '0.75rem', marginBottom: '1.5rem' }}>
-                <Shield size={14} color="#22c55e" style={{ flexShrink: 0, marginTop: 2 }} />
-                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
-                  This fee is a <strong style={{ color: '#22c55e' }}>refundable commitment deposit</strong>. Contact compliance@aipesa.co.ke to request a refund at any time.
-                </p>
-              </div>
+              {/* Removed refund reminder */}
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: 600 }}>M-Pesa Phone Number</label>
@@ -326,7 +315,7 @@ export default function PlansModal({ onClose, isGateway = false }) {
 
           {/* Step: Success */}
           {step === 'success' && (
-            <div style={{ padding: '3rem 2.5rem', textAlign: 'center' }}>
+            <div className="modal-pad" style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '4.5rem', marginBottom: '1rem' }}>🎉</div>
               <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Account Activated!</h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2.5rem', lineHeight: 1.6 }}>

@@ -105,7 +105,7 @@ export default function UnlockTaskModal({ task, onClose }) {
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Task</div>
               <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>{task.title}</div>
               <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--primary)', margin: '0.5rem 0' }}>KES {task.unlockFee}</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>M-Pesa Activation Fee</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Task Unlock Fee</div>
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
