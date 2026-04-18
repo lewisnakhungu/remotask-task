@@ -29,8 +29,8 @@ export default function TaskDetail() {
           <div className="empty-state">
             <div className="empty-state-icon">🔒</div>
             <div className="empty-state-title">Daily Task Limit Reached</div>
-            <div className="empty-state-desc" style={{ marginBottom: '1.5rem' }}>Activate your account to complete more tasks today.</div>
-            <button className="btn btn-primary" onClick={() => setShowUpgrade(true)}>Activate Account →</button>
+            <div className="empty-state-desc" style={{ marginBottom: '1.5rem' }}>Purchase an account tier to complete more tasks today.</div>
+            <button className="btn btn-primary" onClick={() => setShowUpgrade(true)}>Purchase Account Tier →</button>
           </div>
         </div>
         {showUpgrade && <PlansModal onClose={() => setShowUpgrade(false)} />}

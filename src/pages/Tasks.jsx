@@ -35,7 +35,7 @@ export default function Tasks() {
             <h1 className="page-title">Available Tasks</h1>
             <p className="page-sub">
               {tasksCompletedToday}/{dailyLimit} tasks completed today
-              {!plan && <span style={{ color: 'var(--primary)', marginLeft: '0.5rem', fontWeight: 600 }}>• Activate to unlock</span>}
+              {!plan && <span style={{ color: 'var(--primary)', marginLeft: '0.5rem', fontWeight: 600 }}>• Purchase tier to unlock</span>}
             </p>
           </div>
         </div>

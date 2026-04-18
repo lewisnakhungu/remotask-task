@@ -43,7 +43,7 @@ export default function Dashboard() {
             </button>
             {!plan && (
               <button className="btn btn-primary" onClick={() => setShowPlansPopup(true)} id="upgrade-btn">
-                🚀 Activate Account
+                🚀 Purchase Account Tier
               </button>
             )}
           </div>
@@ -68,7 +68,7 @@ export default function Dashboard() {
               <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Free accounts are limited to 3 tasks/day. Upgrade to earn up to KES 8,000/month.</div>
             </div>
             <button className="btn btn-primary" onClick={() => setShowPlansPopup(true)}>
-              Activate Account →
+              Purchase Account Tier →
             </button>
           </div>
         )}
@@ -154,6 +154,9 @@ export default function Dashboard() {
         />
       )}
       {showPlansPopup && <PlansModal onClose={() => setShowPlansPopup(false)} />}
+      
+      {/* Gateway overlay — shown automatically if no active plan */}
+      {!plan && <PlansModal isGateway={true} onClose={() => {}} />}
     </div>
   );
 }

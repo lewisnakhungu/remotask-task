@@ -317,7 +317,7 @@ export default function PlansModal({ onClose, isGateway = false }) {
           {step === 'success' && (
             <div className="modal-pad" style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '4.5rem', marginBottom: '1rem' }}>🎉</div>
-              <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Account Activated!</h2>
+              <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Account Tier Purchased!</h2>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '2.5rem', lineHeight: 1.6 }}>
                 Welcome to AIPesa. Your <strong>{selectedPlan?.name}</strong> account is now active. You can start completing tasks and earning real M-Pesa rewards.
               </p>

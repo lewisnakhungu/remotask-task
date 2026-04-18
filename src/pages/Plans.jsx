@@ -74,7 +74,7 @@ export default function Plans() {
                   onClick={() => handleSelect(p.id)}
                   id={`select-plan-${p.id}`}
                 >
-                  Activate {p.name} →
+                  Purchase {p.name} →
                 </button>
               )}
             </div>
